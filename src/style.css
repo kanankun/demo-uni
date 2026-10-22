@@ -1450,13 +1450,23 @@ button, .btn { font-family: var(--sans); border-radius: 8px; letter-spacing: .2p
 /* --- announcement rows (replaces the old photo grid) --- */
 .notice-row {
     display: flex; align-items: center; gap: 14px;
-    padding: 14px 4px; border-bottom: 1px solid var(--line);
+    padding: 14px 10px; margin: 0 -10px; border-bottom: 1px solid var(--line);
+    color: inherit; text-decoration: none; border-radius: var(--radius);
+    transition: background .15s ease, transform .1s ease;
 }
 .notice-row:last-child { border-bottom: 0; }
+.notice-row:hover, .notice-row:focus-visible { background: var(--line); }
+.notice-row:active { transform: scale(.995); }
 .notice-row .ni { width: 34px; height: 34px; flex: none; fill: var(--ink); opacity: .7; }
-.notice-row .nt { flex: 1; }
+.notice-row .nt { flex: 1; min-width: 0; }
 .notice-row .nt strong { display: block; font-family: var(--serif); }
 .notice-row .nt span { font-size: .78rem; color: var(--muted); }
+.notice-row .nc {
+    width: 18px; height: 18px; flex: none; fill: none;
+    stroke: var(--muted); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    opacity: .6; transition: transform .15s ease;
+}
+.notice-row:hover .nc { transform: translateX(3px); opacity: 1; }
 
 /* --- student directory grid (no follow/likes) --- */
 .student-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }

@@ -31,13 +31,14 @@ include 'header.php';
         <div class="empty-state-box"><h3>No announcements yet</h3></div>
     <?php else: ?>
         <?php foreach ($rows as $n): ?>
-            <div class="notice-row">
+            <a class="notice-row" href="view.php?id=<?php echo (int) $n['id']; ?>">
                 <svg class="ni" viewBox="0 0 24 24"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm8 1.5V8h4.5L14 3.5zM7 12h10v1.6H7V12zm0 3.6h10v1.6H7v-1.6zM7 8.4h5V10H7V8.4z"/></svg>
                 <div class="nt">
                     <strong><?php echo h($n['title']); ?></strong>
                     <span><?php echo h($n['username']); ?> &bull; <?php echo h($n['created_at']); ?></span>
                 </div>
-            </div>
+                <svg class="nc" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+            </a>
         <?php endforeach; ?>
     <?php endif; ?>
 
