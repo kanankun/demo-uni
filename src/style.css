@@ -1,5 +1,5 @@
 /* =========================================
-   UAM stylesheet
+   University A stylesheet
    1. TOKENS, RESET & BASE
    ========================================= */
 :root {
@@ -724,7 +724,7 @@ button:disabled { cursor: not-allowed; opacity: .5; }
 
 /* =========================================
    12. LAB COMPONENTS
-   Shared by every UAM lab: the banner, the profile header,
+   Shared by every University A lab: the banner, the profile header,
    the admin table, the application cards and the photo page.
    ========================================= */
 
@@ -1108,7 +1108,7 @@ pre.out {
 /* =========================================
    12. GUIDED WALKTHROUGH DRAWER
    -----------------------------------------
-   Lab harness, not part of UAM. Pinned to the right of every page so a
+   Lab harness, not part of University A. Pinned to the right of every page so a
    player can follow along without losing the application behind it.
    ========================================= */
 .guide-tab {
@@ -1309,7 +1309,7 @@ body.guide-open .guide-panel { transform: translateX(0); }
 
 
 /* =========================================
-   12. UAM STUDENT PORTAL — DESIGN SYSTEM
+   12. UNIVERSITY A STUDENT PORTAL — DESIGN SYSTEM
    A real reskin, not a recolour: new palette, new type, new topbar,
    new login hero, new dashboard/card language, new table style.
    ========================================= */

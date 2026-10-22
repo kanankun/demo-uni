@@ -1,5 +1,5 @@
 <?php
-/* Guided walkthrough. Lab harness, not part of the UAM Student Portal. */
+/* Guided walkthrough. Lab harness, not part of the University A Student Portal. */
 
 /* Payloads that point at a file this player uploaded need this player's
  * own sandbox, which is different in every browser in the room. Built

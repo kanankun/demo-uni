@@ -1,5 +1,5 @@
 <?php
-/* UAM Student Portal - sign-in page.
+/* University A Student Portal - sign-in page.
  *
  * This is the only thing a guest can reach: a sign-in form, and a public
  * "Check Application Status" lookup next to it - exactly the kind of
@@ -39,7 +39,7 @@ $rows = [];
 $db_error = "";
 if ($q !== '') {
     $search_sql = "AND us.username LIKE '%$q%'";
-    $sql = "SELECT a.id, us.username, a.camera_model, a.status, a.created_at FROM applications a JOIN users us ON a.user_id = us.id WHERE 1=1 $search_sql ORDER BY a.id DESC";
+    $sql = "SELECT a.id, us.username, a.course_title, a.status, a.created_at FROM applications a JOIN users us ON a.user_id = us.id WHERE 1=1 $search_sql ORDER BY a.id DESC";
     $res = $conn->query($sql);
     $db_error = $res ? "" : $conn->error;
     while ($res && $r = $res->fetch_assoc()) $rows[] = $r;
@@ -51,15 +51,13 @@ include 'header.php';
 <div class="auth-shell">
     <div class="auth-hero">
         <div class="crest"></div>
-        <h1>UAM Student Portal</h1>
-        <p>Universiti Anggerik Malaysia &mdash; sign in to access your dashboard, course registration, timetable, results and fees.</p>
-        <p style="font-size:.8rem; opacity:.8;">No account? Registration is handled by the Registrar's Office, not from this page.</p>
+        <h1>University A</h1>
+        <p>Sign in to manage your courses, timetable, results and fees.</p>
     </div>
 
     <div class="auth-panels">
         <div>
             <h2>Sign in</h2>
-            <p class="sub">Students and staff use the same form.</p>
 
             <?php if (!empty($_GET['msg']) && $_GET['msg'] === 'reset'): ?>
                 <div class="alert alert-info">Sandbox wiped - you are starting clean.</div>
@@ -109,7 +107,7 @@ include 'header.php';
                             <?php foreach ($rows as $r): ?>
                                 <tr>
                                     <td><?php echo h($r['username']); ?></td>
-                                    <td><?php echo h($r['camera_model']); ?></td>
+                                    <td><?php echo h($r['course_title']); ?></td>
                                     <td><?php echo h($r['status']); ?></td>
                                     <td><?php echo h($r['created_at']); ?></td>
                                 </tr>

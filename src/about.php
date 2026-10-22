@@ -5,11 +5,11 @@ include 'header.php';
 ?>
 <div class="content">
 <div class="container container-mid">
-    <h2>About UAM</h2>
-    <p>Universiti Anggerik Malaysia (UAM) is a teaching institution offering
-       diploma and degree programmes across computing, business and the
-       applied sciences. This portal is where students register for
-       courses, check their timetable, view results and manage fees.</p>
+    <h2>About University A</h2>
+    <p>University A is a teaching institution offering diploma and degree
+       programmes across computing, business and the applied sciences.
+       This portal is where students register for courses, check their
+       timetable, view results and manage fees.</p>
 
     <h3 class="section-title">What happens here</h3>
     <div class="detail-list">

@@ -1,5 +1,5 @@
 <?php
-/* Week 1 demo - the UAM Student Portal, with two doors left open.
+/* Week 1 demo - the University A Student Portal, with two doors left open.
  *
  * The public "check application status" lookup concatenates into SQL, and
  * the avatar form writes whatever it is given into a directory the server

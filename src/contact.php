@@ -18,7 +18,7 @@ include 'header.php';
         <div class="field"><label for="m">Message</label><textarea id="m" name="message" rows="5" required maxlength="1000" data-counter></textarea></div>
         <button type="submit">Send message</button>
     </form>
-    <div class="form-links"><p>Or email <strong>registrar@uam.edu.my</strong>.</p></div>
+    <div class="form-links"><p>Or email <strong>registrar@universitya.edu.my</strong>.</p></div>
 </div>
 </div>
 <div class="wave-footer"></div>

@@ -1,6 +1,6 @@
 # Week 1 Demo - SQL Injection to Remote Code Execution
 
-The UAM Student Portal, with two doors left open - built for the live demo
+The University A Student Portal, with two doors left open - built for the live demo
 in *The Adnin Times: Offensive Security Careers (Part 1)*.
 
 It is one site, not two labs. The first bug hands you the administrator's

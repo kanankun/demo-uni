@@ -1,4 +1,4 @@
-/* UAM shared UI toolkit: toasts, confirm/prompt dialogs, loading states,
+/* University A shared UI toolkit: toasts, confirm/prompt dialogs, loading states,
  * image fallbacks, file dropzones, counters, relative times, mobile nav.
  * Everything is progressive enhancement; pages still work if this fails. */
 (function () {

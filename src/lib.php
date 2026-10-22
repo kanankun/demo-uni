@@ -1,5 +1,5 @@
 <?php
-/* Shared helpers for every UAM lab.
+/* Shared helpers for every University A lab.
  *
  * db.php includes this file LAST, so a lab that wants a different
  * authorisation model just defines its own ss_is_admin() before the

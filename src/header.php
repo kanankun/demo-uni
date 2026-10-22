@@ -1,13 +1,13 @@
 <?php
 /* Shared page shell.
- *   $page_title - "<title> | UAM"
+ *   $page_title - "<title> | University A"
  *   $page_css   - extra stylesheets, relative to the web root
  * Include db.php first; this file closes nothing, each page ends with
  * </body></html> itself.
  */
 require_once __DIR__ . '/lib.php';
 
-$ss_title = (isset($page_title) && $page_title !== '') ? h($page_title) . ' | UAM' : 'UAM';
+$ss_title = (isset($page_title) && $page_title !== '') ? h($page_title) . ' | University A' : 'University A';
 $ss_v = function ($f) { return @filemtime(__DIR__ . '/' . $f) ?: 1; };
 
 /* The site footer is appended just before </body> on every page. */
@@ -15,7 +15,7 @@ ob_start(function ($html) {
     $pos = strripos($html, '</body>');
     if ($pos === false || strpos($html, 'class="site-footer"') !== false) return $html;
     $footer = '<footer class="site-footer">'
-            . '<span>&copy; ' . date('Y') . ' UAM</span>'
+            . '<span>&copy; ' . date('Y') . ' University A</span>'
             . '<nav aria-label="Footer">'
             . '<a href="about.php">About</a><a href="schedule.php">Timetable</a>'
             . '<a href="terms.php">Terms</a><a href="privacy.php">Privacy</a>'

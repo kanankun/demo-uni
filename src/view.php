@@ -154,7 +154,7 @@ $ss_v = function ($f) { return @filemtime(__DIR__ . '/' . $f) ?: 1; };
 <?php if ($me): ?>
     <meta name="csrf-token" content="<?php echo h(ss_csrf()); ?>">
 <?php endif; ?>
-    <title><?php echo h($post['title']); ?> | UAM</title>
+    <title><?php echo h($post['title']); ?> | University A</title>
     <link rel="icon" type="image/svg+xml" href="images/icon.svg">
     <link rel="stylesheet" href="style.css?v=<?php echo $ss_v('style.css'); ?>">
     <script src="app.js?v=<?php echo $ss_v('app.js'); ?>"></script>

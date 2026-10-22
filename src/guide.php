@@ -1,5 +1,5 @@
 <?php
-/* Guided walkthrough drawer. Lab harness, not part of UAM.
+/* Guided walkthrough drawer. Lab harness, not part of University A.
  *
  * A lab ships overrides/src/guide_data.php, which sets $GUIDE. This file
  * renders it as a panel pinned to the right of every page: an intro, then

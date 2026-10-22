@@ -19,8 +19,8 @@ $ss_link = function ($href, $label, $files = null, $class = '') use ($ss_cur) {
 <?php if (empty($ss_banner_done)) include __DIR__ . '/lab_banner.php'; ?>
 <?php include __DIR__ . '/guide.php'; ?>
     <header>
-        <a href="<?php echo ss_uid() ? 'dashboard.php' : 'index.php'; ?>" class="brand" aria-label="UAM Student Portal home">
-            <h1>UAM</h1>
+        <a href="<?php echo ss_uid() ? 'dashboard.php' : 'index.php'; ?>" class="brand" aria-label="University A Student Portal home">
+            <h1>UA</h1>
         </a>
 
         <button type="button" class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="site-nav">
@@ -31,7 +31,6 @@ $ss_link = function ($href, $label, $files = null, $class = '') use ($ss_cur) {
             <?php if (ss_uid()): ?>
                 <?php echo $ss_link('dashboard.php', 'DASHBOARD'); ?>
                 <?php echo $ss_link('announcements.php', 'ANNOUNCEMENTS', ['announcements.php', 'announcement.php', 'post_announcement.php']); ?>
-                <?php echo $ss_link('apply.php', $ss_admin ? 'REGISTRATIONS' : 'COURSES'); ?>
                 <?php echo $ss_link('assignments.php', 'ASSIGNMENTS', ['assignments.php', 'post_assignment.php']); ?>
                 <?php echo $ss_link('schedule.php', 'TIMETABLE'); ?>
                 <?php echo $ss_link('results.php', 'RESULTS'); ?>
