@@ -367,9 +367,14 @@ button:disabled { cursor: not-allowed; opacity: .5; }
 .pagination .page-info { font-size: .8rem; font-weight: 900; letter-spacing: 1px; }
 .btn[aria-disabled=true] { opacity: .35; pointer-events: none; }
 
-/* avatars */
+/* avatars
+   max-width: none overrides the global `img { max-width: 100% }` reset -
+   without it, a narrow container (a table cell with little padding to
+   spare, say) caps the width below the fixed height and the circle
+   becomes an egg. Height is never capped the same way, so width must
+   not be either. */
 .avatar {
-    width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--ink);
+    width: 36px; height: 36px; max-width: none; border-radius: 50%; border: 2px solid var(--ink);
     object-fit: cover; background: var(--soft); flex-shrink: 0; vertical-align: middle;
 }
 
@@ -403,7 +408,7 @@ button:disabled { cursor: not-allowed; opacity: .5; }
    6. PROFILE (shared bits)
    ========================================= */
 .profile-avatar {
-    width: 130px; height: 130px;
+    width: 130px; height: 130px; max-width: none;
     border-radius: 50%;
     border: 3px solid var(--ink);
     object-fit: cover; flex-shrink: 0;
@@ -1026,12 +1031,12 @@ pre.out {
 .follow-btn.is-following:hover:not(:disabled) { background: var(--bad-bg); color: var(--bad); border-color: var(--bad); }
 .follow-btn:disabled { opacity: .6; cursor: progress; }
 
-/* --- members directory --- */
-.member-tools { display: grid; grid-template-columns: 1fr 220px auto; gap: 14px; align-items: end; margin-bottom: 22px; }
-.member-tools .field { margin: 0; }
-.member-tools input, .member-tools select { margin-bottom: 0 !important; padding: 11px 12px; font-size: 1rem; }
-.member-tools-actions { display: flex; gap: 8px; }
-.member-tools-actions .btn { white-space: nowrap; }
+/* --- student directory --- */
+.student-tools { display: grid; grid-template-columns: 1fr 220px auto; gap: 14px; align-items: end; margin-bottom: 22px; }
+.student-tools .field { margin: 0; }
+.student-tools input, .student-tools select { margin-bottom: 0 !important; padding: 11px 12px; font-size: 1rem; }
+.student-tools-actions { display: flex; gap: 8px; }
+.student-tools-actions .btn { white-space: nowrap; }
 .member-grid { list-style: none; margin: 18px 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
 .member-card {
     display: flex; align-items: center; gap: 14px; padding: 16px;
@@ -1087,8 +1092,8 @@ pre.out {
     .gallery-grid-4 { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 760px) {
-    .member-tools { grid-template-columns: 1fr 1fr; }
-    .member-tools-actions { grid-column: 1 / -1; }
+    .student-tools { grid-template-columns: 1fr 1fr; }
+    .student-tools-actions { grid-column: 1 / -1; }
     .member-grid { grid-template-columns: 1fr; }
     .class-details { grid-template-columns: 1fr; }
     .class-details .detail:nth-child(odd) { border-right: 0; }
@@ -1293,6 +1298,14 @@ body.guide-open .guide-panel { transform: translateX(0); }
     body.guide-open > header,
     body.guide-open .lab-banner { padding-right: calc(40px + var(--guide-w)); }
 
+    /* auth-shell is centred, not pinned - but on anything short of a wide
+       desktop the centred shell's right edge already falls under the
+       drawer's 420px, covering the sign-in form the first guide step on
+       this page points at. Shifting the one shell (not reflowing its own
+       columns) keeps it clear without bringing back the per-navigation
+       jank the comment above describes. */
+    body.guide-open .auth-shell { margin-right: calc(40px + var(--guide-w)); }
+
     /* pinned to the right edge, so it would open underneath the panel */
     body.guide-open #ss-toasts { right: calc(24px + var(--guide-w)); }
 }
@@ -1415,11 +1428,6 @@ button, .btn { font-family: var(--sans); border-radius: 8px; letter-spacing: .2p
 .auth-panels { background: var(--paper); padding: 40px; display: flex; flex-direction: column; gap: 26px; overflow-y: auto; }
 .auth-panels h2 { margin: 0 0 4px; font-size: 1.3rem; }
 .auth-panels .sub { color: var(--muted); margin: 0 0 14px; font-size: .88rem; }
-.status-divider { border: 0; border-top: 1px dashed var(--line); margin: 6px 0; }
-.status-results { margin-top: 14px; }
-.status-results table { width: 100%; border-collapse: collapse; font-size: .85rem; }
-.status-results th { text-align: left; border-bottom: 2px solid var(--ink); padding: 7px 6px; color: var(--ink); }
-.status-results td { padding: 7px 6px; border-bottom: 1px solid var(--line); }
 @media (max-width: 760px) {
     .auth-shell { grid-template-columns: 1fr; margin: 0; border-radius: 0; }
     .auth-hero { padding: 32px 24px; }

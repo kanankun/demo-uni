@@ -21,10 +21,11 @@ $error = "";
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['course_title']) && !$admin) {
     $course = trim($_POST['course_title'] ?? '');
 
-    $stmt = $conn->prepare("SELECT 1 FROM class_sessions WHERE title = ?");
+    $stmt = $conn->prepare("SELECT seats, taken FROM class_sessions WHERE title = ?");
     $stmt->bind_param("s", $course);
     $stmt->execute();
-    $valid = (bool) $stmt->get_result()->fetch_row();
+    $session = $stmt->get_result()->fetch_assoc();
+    $full    = $session && (int) $session['taken'] >= (int) $session['seats'];
 
     $stmt = $conn->prepare("SELECT status FROM applications WHERE user_id = ? AND course_title = ?");
     $stmt->bind_param("is", $me, $course);
@@ -34,10 +35,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['course_title']) && !$
     $allowed = ['jpg', 'jpeg', 'png', 'pdf'];
     $ext     = strtolower(pathinfo($_FILES['sample']['name'] ?? '', PATHINFO_EXTENSION));
 
-    if (!$valid) {
+    if (!$session) {
         $error = "Pick a course from the list.";
     } elseif ($existing && $existing['status'] !== 'pending') {
         $error = "That registration has already been decided - contact the registrar to change it.";
+    } elseif (!$existing && $full) {
+        /* a replacement upload on an already-held seat is fine even if the
+           course has since filled up; only a brand new registration needs
+           a free seat to hold */
+        $error = "This course is full.";
     } elseif (!in_array($ext, $allowed, true)) {
         $error = "Only JPG, PNG or PDF supporting documents are accepted.";
     } else {
@@ -53,6 +59,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['course_title']) && !$
                  ON DUPLICATE KEY UPDATE file_path = VALUES(file_path), created_at = CURRENT_TIMESTAMP");
             $stmt->bind_param("iss", $me, $course, $stored);
             $stmt->execute();
+
+            /* a brand new registration holds a seat immediately, pending or
+               not - that's what stops the next student from registering
+               into a course that's already full. Rejection frees it again. */
+            if (!$existing) {
+                $stmt = $conn->prepare("UPDATE class_sessions SET taken = taken + 1 WHERE title = ? AND taken < seats");
+                $stmt->bind_param("s", $course);
+                $stmt->execute();
+            }
+
             ss_flash("Registration submitted.");
             header("Location: apply.php");
             exit;
@@ -66,9 +82,24 @@ foreach (['approve' => 'approved', 'reject' => 'rejected'] as $param => $status)
     if (isset($_GET[$param])) {
         if (!$admin) { http_response_code(403); exit("Access denied."); }
         $app_id = (int) $_GET[$param];
+
+        $stmt = $conn->prepare("SELECT course_title, status FROM applications WHERE id = ?");
+        $stmt->bind_param("i", $app_id);
+        $stmt->execute();
+        $app_row = $stmt->get_result()->fetch_assoc();
+
         $stmt = $conn->prepare("UPDATE applications SET status = ? WHERE id = ?");
         $stmt->bind_param("si", $status, $app_id);
         $stmt->execute();
+
+        /* approving keeps the seat this registration already holds;
+           rejecting gives it back to the course */
+        if ($app_row && $status === 'rejected' && $app_row['status'] === 'pending') {
+            $stmt = $conn->prepare("UPDATE class_sessions SET taken = taken - 1 WHERE title = ? AND taken > 0");
+            $stmt->bind_param("s", $app_row['course_title']);
+            $stmt->execute();
+        }
+
         ss_flash("Registration $status.");
         header("Location: apply.php");
         exit;
@@ -176,6 +207,9 @@ include 'header.php';
                                 <button type="submit" class="btn btn-sm" data-loading-text="Uploading...">Replace document</button>
                             </form>
                         <?php endif; ?>
+
+                    <?php elseif ($full): ?>
+                        <div class="app-note is-bad">This course is full.</div>
 
                     <?php else: ?>
                         <form method="post" enctype="multipart/form-data">

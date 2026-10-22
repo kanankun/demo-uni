@@ -1,7 +1,7 @@
 -- Real announcements, decoupled from the student photo feed.
 --
 -- `uploads` is the student photo/gallery feature (feed_card.php, tag.php,
--- members.php, saved.php, view.php - comments and likes included). It was
+-- students.php, saved.php, view.php - comments and likes included). It was
 -- never meant to double as the registrar's notice board, and listing every
 -- student's photo post as a "university announcement" is exactly backwards:
 -- stale photo-caption titles, no way to tell who could actually post one,

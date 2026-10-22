@@ -19,25 +19,29 @@ classic bugs; this is two of them, on one site, in a row.
 
 ## 0:00 - Frame it (2 min)
 
-Show the sign-in page. Point out the second box next to the sign-in form:
-**Check application status**.
+Show the sign-in page. One form, nothing else.
 
-> "Nothing on this page says 'hack me'. There is no admin panel on display,
-> no error, no clue - just a sign-in form and a little utility box that lets
-> you check an application without an account. We are going to end up
-> reading everybody's password and running commands on the server, and we
-> start by typing into that utility box."
+> "Nothing on this page says 'hack me', and there is nothing to find here -
+> that is the point. Sign in as an ordinary student with the account in the
+> guide panel. We are going to end up reading everybody's password and
+> running commands on the server, and we start from inside the site, as a
+> completely unprivileged account."
+
+Sign in as `ahmad.faiz`. Open **STUDENTS** in the navigation.
+
+> "A directory. A search box. This is the kind of feature every student
+> portal has, and it's where we start."
 
 ---
 
 ## 2:00 - Make the database speak (6 min)
 
-**Type a letter, like `a`, and press Check status.** A few rows come back.
+**Type a letter, like `a`, and press Search.** A few rows come back.
 
 > "That text just went into the database and came back as results. Hold on
 > to *went into*."
 
-**Clear it. Type a single `'` and press Check status.** A red SQL error
+**Clear it. Type a single `'` and press Search.** A red SQL error
 appears.
 
 > "That is the database complaining. Not the website - the database. Which
@@ -46,23 +50,23 @@ appears.
 > rest stopped making sense."
 
 **The money shot.**
-`zzz' UNION SELECT 1,username,3,4,password FROM users -- -`
+`zzz' UNION SELECT 1,username,2,username,password,3,0 FROM users -- -`
 
-> "`zzz` matches no real applicant, so the only row left is the one I just
-> added. `UNION SELECT` bolts a second query onto the first - five values,
-> because the page selects five columns. I put `username` under Applicant
-> and `password` under Date. The page does not check what it prints, only
+> "`zzz` matches no real student, so the only row left is the one I just
+> added. `UNION SELECT` bolts a second query onto the first - seven values,
+> because the page selects seven columns. I put `username` under Name and
+> `password` under Programme. The page does not check what it prints, only
 > that there is something to print."
 
-**Stop talking. Let them read it. Scroll slowly. Page through.**
+**Stop talking. Let them read it. Scroll slowly.**
 
 > "Forty-two accounts, and that is not a column mislabelled - that is a
-> plain-text password sitting under a column called *Date*. Not hashes to
-> crack. Those are the passwords. Look how many are the same word - that's
+> plain-text password sitting under a column called *Programme*. Not hashes
+> to crack. Those are the passwords. Look how many are the same word - that's
 > slide 2, the hands that went up for *used the same password on two
 > sites*."
 
-Scroll until you find the row where Applicant reads `admin`.
+Scroll until you find the row where Name reads `admin`.
 
 > "And there it is. Notice it is not a weak password. It never had to be -
 > they wrote it down for me."
@@ -71,8 +75,7 @@ Scroll until you find the row where Applicant reads `admin`.
 
 ## 8:00 - Walk in the front door (2 min)
 
-Scroll up to the **Sign in** form on the same page. Log in as `admin` with
-the password now on screen.
+**LOGOUT**, then sign in as `admin` with the password now on screen.
 
 > "No exploit here. I am typing a username and a password into a login form,
 > exactly as intended. From the server's point of view the administrator just
@@ -135,8 +138,8 @@ Click **RESTORE SIGN-IN PAGE** in the corner.
 
 > "Two bugs. Both decades old. Both still shipping.
 >
-> The status-check box trusted text to stay text. Fix: bind the parameter -
-> pass the search term as a *value*, never as part of the query.
+> The directory search box trusted text to stay text. Fix: bind the
+> parameter - pass the search term as a *value*, never as part of the query.
 >
 > The upload form trusted a filename to describe its contents. Fix: store
 > uploads outside the web root, rename them, and never let the server execute
@@ -154,9 +157,9 @@ down.**
 ## Letting them play
 
 Give out the URL. Everything they need is in the panel on the right - 11
-steps, a copy button on every payload, the optional student account at the
-top (they do not need it for the attack; it is just there to look around
-first).
+steps, a copy button on every payload, the student account at the top (sign
+in with it first - the injection is behind login now, not on the sign-in
+page itself).
 
 Tell them three things:
 

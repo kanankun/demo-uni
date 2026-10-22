@@ -35,7 +35,7 @@ $ss_link = function ($href, $label, $files = null, $class = '') use ($ss_cur) {
                 <?php echo $ss_link('schedule.php', 'TIMETABLE'); ?>
                 <?php echo $ss_link('results.php', 'RESULTS'); ?>
                 <?php echo $ss_link('fees.php', 'FEES'); ?>
-                <?php echo $ss_link('members.php', 'STUDENTS'); ?>
+                <?php echo $ss_link('students.php', 'STUDENTS'); ?>
                 <?php echo $ss_link('profile.php', 'PROFILE', ['profile.php', 'settings.php']); ?>
                 <?php if ($ss_admin): ?>
                     <?php echo $ss_link('admin.php', 'ADMIN'); ?>

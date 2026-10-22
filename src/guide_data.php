@@ -9,35 +9,35 @@ $ss_scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https
 $u = $ss_scheme . '://' . $_SERVER['HTTP_HOST'] . '/' . ss_inst_url();
 
 $GUIDE = [
-'intro' => 'Two mistakes, one behind the other. The "Check application status" box on the sign-in page builds its SQL by gluing your text into it, and the avatar form on your profile saves whatever you hand it into a folder the server will execute. The first gives you the administrator\'s password. The second is waiting behind the administrator\'s own login.<br><br>There is no sign-up on this portal - accounts are issued by the Registrar\'s Office, same as a real campus SSO. You do not need an account for any of this: the SQL injection below is reachable from the sign-in page with nobody logged in at all.',
+'intro' => 'Two mistakes, one behind the other. The Student Directory\'s search box builds its SQL by gluing your text into it, and the avatar form on your profile saves whatever you hand it into a folder the server will execute. The first gives you the administrator\'s password. The second is waiting behind the administrator\'s own login.<br><br>There is no sign-up on this portal - accounts are issued by the Registrar\'s Office, same as a real campus SSO. Sign in with the student account below first: the SQL injection is reachable by any signed-in account, student or staff, not just an administrator\'s.',
 'steps' => [
 
-['t' => 'Search for something normal',
- 'b' => '<p>On the sign-in page, find <strong>Check application status</strong>. Type a name fragment and press <strong>Check status</strong>.</p>',
+['t' => 'Sign in, then search for something normal',
+ 'b' => '<p>Sign in with the student account above, then open <strong>STUDENTS</strong> in the navigation. Type a name fragment into <strong>Search by name</strong> and press Search.</p>',
  'try' => [
-     'Applicant name' => 'a',
+     'Search by name' => 'a',
  ],
  'see' => 'A few rows. Your text travelled into the database and came back as results. Hold on to that: it <em>went into</em> the database.',
 ],
 
 ['t' => 'Send one apostrophe',
- 'b' => '<p>Clear the box. Type a single <code>\'</code> and press Check status.</p>',
+ 'b' => '<p>Clear the box. Type a single <code>\'</code> and press Search.</p>',
  'try' => [
-     'Applicant name' => '\'',
+     'Search by name' => '\'',
  ],
  'see' => 'A red <strong>SQL error</strong> - the database\'s own complaint, printed on the page. That only happens if your text arrived as part of the instruction instead of as data.',
 ],
 
 ['t' => 'Read every username and password',
- 'b' => '<p>One row per account: the Applicant column is the username, the Date column holds the password - not a date at all, just whatever you told the page to print there.</p>',
+ 'b' => '<p>One row per account: the Name column is the username, the Programme column holds the password - not a programme at all, just whatever you told the page to print there.</p>',
  'try' => [
-     'Applicant name' => 'zzz\' UNION SELECT 1,username,3,4,password FROM users -- -',
+     'Search by name' => 'zzz\' UNION SELECT 1,username,2,username,password,3,0 FROM users -- -',
  ],
- 'see' => 'Forty-two accounts, and their passwords are <strong>just sitting there</strong>. Not hashes to crack - the passwords. Page through them and notice how many are the same.',
+ 'see' => 'Forty-two accounts, and their passwords are <strong>just sitting there</strong>. Not hashes to crack - the passwords. Scroll through them and notice how many are the same.',
 ],
 
 ['t' => 'Sign in as the administrator',
- 'b' => '<p>Scroll up to the <strong>Sign in</strong> form on this same page. Username <code>admin</code>, password the one you just read off the screen.</p>',
+ 'b' => '<p><strong>LOGOUT</strong> first - the sign-in form only shows when nobody is signed in. Then sign in with username <code>admin</code>, password the one you just read off the screen.</p>',
  'see' => 'You are the administrator. A <strong>DASHBOARD</strong> loads, and an <strong>ADMIN</strong> tab appears in the navigation. The SQL injection is over - everything after this is just being logged in.',
 ],
 
@@ -93,5 +93,5 @@ $GUIDE = [
  'see' => 'The sign-in page returns. Your shell is still there. Only you ever saw the defacement - everyone else in the room gets to do it themselves.',
 ],
 ],
-'after' => '<p>Neither bug is exotic. The status-check box trusts text to stay text, and the upload form trusts a filename to describe its contents. Both are decades old and both are still shipping.</p><p>What made it a bad day was the order. Reading the database would have been a report on its own; reading <em>plain text passwords</em> turned it into a key. Hashing would not have stopped the injection - it would have stopped the injection from mattering.</p><p>Three fixes, each one sufficient to break the chain:</p><p><strong>1.</strong> Bind the parameter. Pass the search term as a value, not as part of the query, and every payload above becomes a result nobody has.</p><p><strong>2.</strong> Hash the passwords. The dump still happens and is still a breach, but nobody signs in with it.</p><p><strong>3.</strong> Store uploads outside the web root, rename them, and never let the server execute what a user sent. Then a PHP file is just a file.</p>',
+'after' => '<p>Neither bug is exotic. The directory search box trusts text to stay text, and the upload form trusts a filename to describe its contents. Both are decades old and both are still shipping.</p><p>What made it a bad day was the order. Reading the database would have been a report on its own; reading <em>plain text passwords</em> turned it into a key. Hashing would not have stopped the injection - it would have stopped the injection from mattering.</p><p>Three fixes, each one sufficient to break the chain:</p><p><strong>1.</strong> Bind the parameter. Pass the search term as a value, not as part of the query, and every payload above becomes a result nobody has.</p><p><strong>2.</strong> Hash the passwords. The dump still happens and is still a breach, but nobody signs in with it.</p><p><strong>3.</strong> Store uploads outside the web root, rename them, and never let the server execute what a user sent. Then a PHP file is just a file.</p>',
 ];

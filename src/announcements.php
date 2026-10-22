@@ -3,7 +3,7 @@
  *
  * Deliberately NOT part of the vulnerability chain - this is a static,
  * parameter-free listing query. The injectable search box lives on
- * index.php's "Check application status" panel instead.
+ * students.php's directory search instead.
  *
  * Its own table, not the student photo feed. A notice board that borrows
  * the gallery's `uploads` rows ends up showing every student's photo

@@ -11,7 +11,7 @@ case file - recon, research, access, impact - is the shape of the walkthrough.
 
 | # | Bug | What it gives you |
 |---|-----|-------------------|
-| 1 | SQL injection in the public "Check application status" lookup on the sign-in page | Every username and password, in plain text |
+| 1 | SQL injection in the Student Directory's search box (reachable by any signed-in account) | Every username and password, in plain text |
 | 2 | Unrestricted file upload on the avatar form | Your code running on the server |
 
 The payoff is deliberately not a flag:
@@ -90,7 +90,7 @@ anyway.
 
 | Account | Password | Note |
 |---------|----------|------|
-| `ahmad.faiz` | `student123` | Shown in the guide panel. An ordinary student - not needed for the attack itself. |
+| `ahmad.faiz` | `student123` | Shown in the guide panel. Sign in with this first - the SQL injection is behind login, in the Student Directory search, not something an anonymous visitor can reach. |
 | `admin` | *not published* | The point of the first half. Read it out of the database. |
 
 The administrator's password is in `sql/01-schema.sql` if you need it in a
@@ -134,7 +134,8 @@ docker-compose.yml      builds and runs it on 8300
 entrypoint.sh           database, then the bot, then Apache
 sql/                    schema and seed - passwords in plain text
 src/                    the application
-  index.php             sign-in + the public "check application status" lookup
+  index.php             sign-in, nothing else
+  students.php          student directory - the injectable search lives here
   instance.php          the per-browser sandbox
   guide_data.php        the 11-step guided walkthrough
   login.tpl.php         the sign-in page each sandbox gets a copy of

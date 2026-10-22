@@ -1,16 +1,11 @@
 <?php
 /* University A Student Portal - sign-in page.
  *
- * This is the only thing a guest can reach: a sign-in form, and a public
- * "Check Application Status" lookup next to it - exactly the kind of
- * no-login utility a real admissions site publishes. There is no
- * self-registration; accounts are issued by the registrar.
- *
- * [VULN - UNION-based SQL injection]
- * The status-check name field is concatenated straight into the query
- * below. The query is written on one line so a trailing comment really
- * does swallow the ORDER BY, and the driver error is printed when
- * something goes wrong. This is reachable with no account at all. */
+ * This is the only thing a guest can reach: a sign-in form. There is no
+ * self-registration; accounts are issued by the registrar. The SQL
+ * injection used to live in a public "Check application status" box
+ * here - it doesn't anymore. It's in the Student Directory search
+ * instead, reachable only once signed in. See students.php. */
 include 'db.php';
 
 /* If this player has defaced the portal, that is what everyone sees -
@@ -32,18 +27,6 @@ if (ss_uid()) {
 }
 
 $page_title = 'Sign In';
-
-/* --- the public status-check lookup -------------------------------- */
-$q = trim($_GET['name'] ?? '');
-$rows = [];
-$db_error = "";
-if ($q !== '') {
-    $search_sql = "AND us.username LIKE '%$q%'";
-    $sql = "SELECT a.id, us.username, a.course_title, a.status, a.created_at FROM applications a JOIN users us ON a.user_id = us.id WHERE 1=1 $search_sql ORDER BY a.id DESC";
-    $res = $conn->query($sql);
-    $db_error = $res ? "" : $conn->error;
-    while ($res && $r = $res->fetch_assoc()) $rows[] = $r;
-}
 
 include 'header.php';
 ?>
@@ -78,45 +61,6 @@ include 'header.php';
                 </div>
                 <button type="submit" class="btn btn-primary btn-block" data-loading-text="Checking...">Sign in</button>
             </form>
-        </div>
-
-        <hr class="status-divider">
-
-        <div>
-            <h2>Check application status</h2>
-            <p class="sub">No account needed. Enter the applicant's name as submitted.</p>
-
-            <form method="get" action="index.php">
-                <div class="field">
-                    <label for="name">Applicant name</label>
-                    <input type="text" id="name" name="name" value="<?php echo h($q); ?>" placeholder="e.g. ali" autocomplete="off">
-                </div>
-                <button type="submit" class="btn btn-block" data-loading-text="Checking...">Check status</button>
-            </form>
-
-            <?php if ($db_error): ?>
-                <div class="alert alert-error" style="margin-top:14px;"><strong>SQL error:</strong> <?php echo h($db_error); ?></div>
-            <?php elseif ($q !== ''): ?>
-                <div class="status-results">
-                    <?php if (!$rows): ?>
-                        <p class="sub">No application matched "<?php echo h($q); ?>".</p>
-                    <?php else: ?>
-                        <table>
-                            <thead><tr><th>Applicant</th><th>Programme</th><th>Status</th><th>Date</th></tr></thead>
-                            <tbody>
-                            <?php foreach ($rows as $r): ?>
-                                <tr>
-                                    <td><?php echo h($r['username']); ?></td>
-                                    <td><?php echo h($r['course_title']); ?></td>
-                                    <td><?php echo h($r['status']); ?></td>
-                                    <td><?php echo h($r['created_at']); ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    <?php endif; ?>
-                </div>
-            <?php endif; ?>
         </div>
     </div>
 </div>
