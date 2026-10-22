@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Filled square rather than a black mark on transparent, so the tab icon
+       reads on a dark tab bar as well as a light one. -->
+  <rect width="64" height="64" fill="#000000"/>
+  <path fill="#ffffff" d="M6,43 L19,56 H45 L58,43 H6 Z" />
+  <path fill="#ffffff" d="M30,10 L10,39 H30 V10 Z" />
+  <path fill="#ffffff" d="M34,10 V39 H54 L34,10 Z" />
+</svg>

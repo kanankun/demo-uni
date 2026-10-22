@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 100 1200 220" preserveAspectRatio="none">
+  <!-- The footer tiles this file with background-repeat: repeat-x, so every
+       curve has to leave the right edge exactly where it entered the left
+       one: same y, same horizontal tangent, a whole number of periods across
+       the 1200 units. Back and middle are open paths - closing them with
+       V/H/Z drew a stroked vertical down each tile edge. -->
+
+  <!-- back: two periods of 600, starting in a trough -->
+  <path fill="none" stroke="#000000" stroke-width="2" opacity="0.3"
+        d="M0,256 C150,256 150,128 300,128 C450,128 450,256 600,256
+           C750,256 750,128 900,128 C1050,128 1050,256 1200,256"/>
+
+  <!-- middle: two periods of 600 in the opposite phase, so the two cross -->
+  <path fill="none" stroke="#000000" stroke-width="2" opacity="0.6"
+        d="M0,160 C150,160 150,288 300,288 C450,288 450,160 600,160
+           C750,160 750,288 900,288 C1050,288 1050,160 1200,160"/>
+
+  <!-- front: three periods of 400, filled. It closes below the viewBox so
+       the closing stroke never shows. -->
+  <path fill="#ffffff" stroke="#000000" stroke-width="3"
+        d="M0,320 C100,320 100,192 200,192 C300,192 300,320 400,320
+           C500,320 500,192 600,192 C700,192 700,320 800,320
+           C900,320 900,192 1000,192 C1100,192 1100,320 1200,320
+           V360 H0 Z"/>
+</svg>

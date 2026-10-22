@@ -1,0 +1,23 @@
+services:
+  demo-uni:
+    build: .
+    image: week1-demo-uni:latest
+    container_name: week1-demo-uni
+    ports:
+      - "8300:80"
+    restart: unless-stopped
+
+    # This container hands forty students a shell. Without limits, one
+    # fork bomb or one `yes > file` takes the whole droplet down - and
+    # with it the phishing demo, mid-class.
+    cpus: 2.0
+    mem_limit: 1500m
+    memswap_limit: 1500m
+    pids_limit: 300
+
+    # Player sandboxes live in RAM, capped. A student filling their own
+    # disk now hits 256 MB and stops, instead of filling the droplet.
+    # It also means every sandbox is gone on restart, which is what you
+    # want between cohorts anyway.
+    tmpfs:
+      - /var/www/html/i:size=256m,mode=1777,uid=33,gid=33
