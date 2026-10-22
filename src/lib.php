@@ -75,6 +75,13 @@ if (!function_exists('ss_app_src')) {
     }
 }
 
+if (!function_exists('ss_submission_src')) {
+    function ss_submission_src($submission_id)
+    {
+        return 'serve.php?type=submission&id=' . (int) $submission_id;
+    }
+}
+
 /* Shorthand for htmlspecialchars. Deliberately NOT used on the pages that
  * are supposed to be injectable - grep for it to see what is defended. */
 function h($s)

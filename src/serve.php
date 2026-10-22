@@ -41,6 +41,20 @@ if ($type === 'avatar') {                       /* public */
         exit("Access denied.");
     }
     $path = "../uploads/apps/" . $row['file_path'];   /* contained by the realpath check below */
+
+} elseif ($type === 'submission') {             /* owner or admin only */
+    if (!$uid) { http_response_code(403); exit("Access denied."); }
+
+    $stmt = $conn->prepare("SELECT user_id, file_path FROM assignment_submissions WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $row = $stmt->get_result()->fetch_assoc();
+
+    if (!$row || !(ss_is_admin($conn) || $row['user_id'] == $uid)) {
+        http_response_code(403);
+        exit("Access denied.");
+    }
+    $path = "../uploads/assignments/" . $row['file_path'];   /* contained by the realpath check below */
 }
 
 /* Final containment check: never serve anything from outside /var/www/uploads. */

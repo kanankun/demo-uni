@@ -30,8 +30,9 @@ $ss_link = function ($href, $label, $files = null, $class = '') use ($ss_cur) {
         <nav id="site-nav" aria-label="Main">
             <?php if (ss_uid()): ?>
                 <?php echo $ss_link('dashboard.php', 'DASHBOARD'); ?>
-                <?php echo $ss_link('announcements.php', 'ANNOUNCEMENTS'); ?>
+                <?php echo $ss_link('announcements.php', 'ANNOUNCEMENTS', ['announcements.php', 'announcement.php', 'post_announcement.php']); ?>
                 <?php echo $ss_link('apply.php', $ss_admin ? 'REGISTRATIONS' : 'COURSES'); ?>
+                <?php echo $ss_link('assignments.php', 'ASSIGNMENTS', ['assignments.php', 'post_assignment.php']); ?>
                 <?php echo $ss_link('schedule.php', 'TIMETABLE'); ?>
                 <?php echo $ss_link('results.php', 'RESULTS'); ?>
                 <?php echo $ss_link('fees.php', 'FEES'); ?>
