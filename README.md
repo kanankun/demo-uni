@@ -1,7 +1,7 @@
 # Week 1 Demo - SQL Injection to Remote Code Execution
 
-SeaShaw with two doors left open, built for the 30-minute live demo in
-*The Adnin Times: Offensive Security Careers (Part 1)*.
+The UAM Student Portal, with two doors left open - built for the live demo
+in *The Adnin Times: Offensive Security Careers (Part 1)*.
 
 It is one site, not two labs. The first bug hands you the administrator's
 password; the second is waiting behind the administrator's login. Slide 11's
@@ -9,17 +9,15 @@ case file - recon, research, access, impact - is the shape of the walkthrough.
 
 ## The chain
 
-| # | Bug | What it gives you | Slide |
-|---|-----|-------------------|-------|
-| 1 | SQL injection in the gallery search | Every username and password, in plain text | 12, BUG 02 |
-| 2 | Unrestricted file upload on the avatar form | Your code running on the server | 12, BUG 03 |
+| # | Bug | What it gives you |
+|---|-----|-------------------|
+| 1 | SQL injection in the public "Check application status" lookup on the sign-in page | Every username and password, in plain text |
+| 2 | Unrestricted file upload on the avatar form | Your code running on the server |
 
 The payoff is deliberately not a flag:
 
 - **Confidentiality** - 42 real passwords on screen, nothing to crack.
-- **Integrity** - the homepage replaced with whatever you want.
-- **Persistence** - the sign-in page replaced with one that writes every
-  password down as members type it, and a drop site that fills while you watch.
+- **Integrity** - the sign-in page replaced with whatever you want.
 
 ## Run it
 
@@ -27,24 +25,24 @@ The payoff is deliberately not a flag:
 docker compose up -d --build
 ```
 
-Then <http://localhost:8200>. First build takes a few minutes (it bakes the
+Then <http://localhost:8300>. First build takes a few minutes (it bakes the
 database into the image); after that a container is serving in about two
 seconds.
 
 ## Put it on the droplet
 
 ```
-scp -r demo root@YOUR_DROPLET:/opt/week1-demo
-ssh root@YOUR_DROPLET 'cd /opt/week1-demo && docker compose up -d --build'
+scp -r demo-uni root@YOUR_DROPLET:/opt/week1-demo-uni
+ssh root@YOUR_DROPLET 'cd /opt/week1-demo-uni && docker compose up -d --build'
 ```
 
-It listens on 8200 and is self-contained - one container, its own database,
-no dependency on the SeaShaw labs. Nothing in this folder touches the
-existing SeaShaw deployment or its Caddy/HTTPS setup.
+It listens on 8300 and is self-contained - one container, its own database,
+no dependency on any other lab. Nothing in this folder touches another
+deployment or its Caddy/HTTPS setup.
 
-To serve it over HTTPS alongside the existing labs, add one block to the
-Caddyfile already on the box, pointing a hostname at `127.0.0.1:8200`, and
-bind the port to loopback in `docker-compose.yml`.
+To serve it over HTTPS alongside other labs, add one block to the Caddyfile
+already on the box, pointing a hostname at `127.0.0.1:8300`, and bind the
+port to loopback in `docker-compose.yml`.
 
 ### What it needs
 
@@ -60,8 +58,8 @@ One request costs about 21 ms, so a single core serves ~46 of them a second -
 roughly four times what forty students clicking can generate. Disk is 1 GB for
 the image and about half a megabyte for forty sandboxes.
 
-- **Alongside the existing SeaShaw droplet** (4 GB / 2 vCPU, ~1.2 GB at rest):
-  adding this changes nothing. Just check there is ~2 GB of disk free.
+- **Alongside another droplet** (4 GB / 2 vCPU, ~1.2 GB at rest): adding this
+  changes nothing. Just check there is ~2 GB of disk free.
 - **On its own droplet:** the $6 `s-1vcpu-1gb` genuinely runs it. Take
   `s-1vcpu-2gb` if you will build the image on the box rather than copying it
   up, since the build installs and seeds MariaDB.
@@ -92,7 +90,7 @@ anyway.
 
 | Account | Password | Note |
 |---------|----------|------|
-| `ahmad.faiz` | `student123` | Handed out on the objective strip. An ordinary student. |
+| `ahmad.faiz` | `student123` | Shown in the guide panel. An ordinary student - not needed for the attack itself. |
 | `admin` | *not published* | The point of the first half. Read it out of the database. |
 
 The administrator's password is in `sql/01-schema.sql` if you need it in a
@@ -100,28 +98,17 @@ hurry mid-demo.
 
 ## Everyone gets their own copy
 
-Forty students on one box cannot share one defaced homepage - the first
+Forty students on one box cannot share one defaced sign-in page - the first
 person to do it spoils it for everybody else.
 
 So every browser gets a sandbox directory of its own under `i/<id>/`, keyed
-to a cookie. Uploads, the web shell, the defacement and the captured
-passwords all live there. What one student does is invisible to the rest,
-and everybody arrives at a clean site. **RESET** in the top strip wipes a
-sandbox and starts it over; **RESTORE HOMEPAGE** undoes only a defacement.
+to a cookie. Uploads, the web shell, and the defacement all live there. What
+one student does is invisible to the rest, and everybody arrives at a clean
+site. **RESET** in the top strip wipes a sandbox and starts it over;
+**RESTORE SIGN-IN PAGE** undoes only a defacement.
 
 Your projector is just another browser, so walking the demo first spoils
 nothing.
-
-## The members who keep logging in
-
-`bot/bot.php` signs in as a random member against every active sandbox every
-three seconds, using that member's real password, from a plausible campus IP.
-
-While the sign-in page is honest this is invisible. The moment a student
-replaces it with one that writes passwords down, the same ordinary traffic
-starts landing in their drop site - about twenty credentials a minute. That
-is the whole argument for why this bug is worse than defacement, and it makes
-it rather than asserting it.
 
 ## Deliberately insecure
 
@@ -143,19 +130,19 @@ Do not put this on a network you care about, and do not reuse any of it.
 
 ```
 Dockerfile              one container: Apache + PHP + MariaDB
-docker-compose.yml      builds and runs it on 8200
+docker-compose.yml      builds and runs it on 8300
 entrypoint.sh           database, then the bot, then Apache
 sql/                    schema and seed - passwords in plain text
 src/                    the application
+  index.php             sign-in + the public "check application status" lookup
   instance.php          the per-browser sandbox
-  guide_data.php        the 23-step guided walkthrough
+  guide_data.php        the 11-step guided walkthrough
   login.tpl.php         the sign-in page each sandbox gets a copy of
-  captured.php          the drop site
-bot/bot.php             the members who keep logging in
-payloads/               the two files a student uploads - shell.php, login.php
-uploads/                seeded photos, outside the web root
-RUNSHEET.md             the 30 minutes, in order
+bot/bot.php             the accounts who keep logging in
+payloads/               the file a student uploads for the RCE step - shell.php
+uploads/                seeded avatars and sample files, outside the web root
+RUNSHEET.md             the demo script, in order
 ```
 
 `payloads/` is the answer key. It is in this folder for you, not served to
-anybody - keep it off the droplet if you would rather students typed them.
+anybody - keep it off the droplet if you would rather students typed it.

