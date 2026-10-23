@@ -44,7 +44,10 @@ RUN set -eux; \
     mkdir -p /var/www/html/i; chown www-data:www-data /var/www/html/i; chmod 1777 /var/www/html/i; \
     chown -R www-data:www-data /var/www/uploads; \
     printf '<Directory /var/www/html/i>\n    Options -Indexes\n</Directory>\n' \
-        > /etc/apache2/conf-enabled/sandbox.conf
+        > /etc/apache2/conf-enabled/sandbox.conf; \
+    mkdir -p /var/log/demo; \
+    sed -i 's|^\s*CustomLog.*$|CustomLog /var/log/demo/access.log combined|' \
+        /etc/apache2/sites-available/000-default.conf
 
 COPY --chmod=0755 entrypoint.sh /usr/local/bin/demo-start
 EXPOSE 80

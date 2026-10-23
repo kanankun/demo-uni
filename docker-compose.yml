@@ -23,12 +23,13 @@ services:
       - /var/www/html/i:size=256m,mode=1777,uid=33,gid=33
 
     # Mirror only the Apache access log onto the host, so it can be read
-    # with `tail -f logs/access.log` - no `docker exec` needed. The base
-    # image symlinks access.log to /dev/stdout; this bind masks that
-    # symlink with a real file, so requests stop appearing in
-    # `docker logs` and land in ./logs/ instead.
+    # with `tail -f logs/access.log` - no `docker exec` needed. The
+    # Dockerfile points CustomLog at /var/log/demo/access.log (a real
+    # file, not the image's /dev/stdout symlink - Docker resolves bind
+    # destinations through symlinks, which would hijack container
+    # stdout). Requests no longer appear in `docker logs`.
     # The host file must exist before `docker compose up`, or Docker
     # mounts a directory over the path and Apache fails to start:
     #   mkdir -p logs && touch logs/access.log
     volumes:
-      - ./logs/access.log:/var/log/apache2/access.log
+      - ./logs/access.log:/var/log/demo/access.log
