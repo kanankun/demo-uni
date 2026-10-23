@@ -13,10 +13,11 @@ include 'db.php';
 if (is_file(ss_deface_file())) {
     header('Content-Type: text/html; charset=utf-8');
     readfile(ss_deface_file());
-    echo '<div style="position:fixed;right:12px;bottom:12px;z-index:99999;'
-       . 'font:12px/1.4 ui-monospace,Menlo,Consolas,monospace">'
-       . '<a href="restore.php" style="background:#111;color:#fff;padding:7px 12px;'
-       . 'border-radius:6px;text-decoration:none;opacity:.75">RESTORE SIGN-IN PAGE</a></div>';
+    echo '<div style="position:fixed;left:50%;bottom:48px;transform:translateX(-50%);z-index:99999;'
+       . 'font:14px/1.4 ui-monospace,Menlo,Consolas,monospace">'
+       . '<a href="restore.php" style="background:#111;color:#6effa6;padding:10px 20px;'
+       . 'border:1px solid #6effa6;border-radius:6px;text-decoration:none;'
+       . 'box-shadow:0 0 12px rgba(110,255,166,.4)">RESTORE SIGN-IN PAGE</a></div>';
     exit;
 }
 

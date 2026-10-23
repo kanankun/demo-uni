@@ -63,8 +63,11 @@ function ss_inst_init()
 /* Where this browser's login page lives. */
 function ss_login_url() { return ss_inst_url() . '/login.php'; }
 
-/* The defaced homepage, if this player has written one. */
-function ss_deface_file() { return ss_inst_dir() . '/home.html'; }
+/* The defaced homepage, if anyone has written one. One shared file, not
+ * per-sandbox: a real defacement is a single site everyone sees broken,
+ * not forty private copies, so this deliberately breaks the per-visitor
+ * isolation everything else in this file keeps. */
+function ss_deface_file() { return __DIR__ . '/i/_global_home.html'; }
 
 /* Throw the sandbox away and start clean. */
 function ss_inst_reset()
