@@ -2,7 +2,8 @@
   <!-- Filled square rather than a black mark on transparent, so the tab icon
        reads on a dark tab bar as well as a light one. -->
   <rect width="64" height="64" fill="#000000"/>
-  <path fill="#ffffff" d="M6,43 L19,56 H45 L58,43 H6 Z" />
-  <path fill="#ffffff" d="M30,10 L10,39 H30 V10 Z" />
-  <path fill="#ffffff" d="M34,10 V39 H54 L34,10 Z" />
+  <path fill="#ffffff" d="M32,10 L60,24 L32,38 L4,24 Z"/>
+  <path fill="#ffffff" d="M22,27 L42,27 L38,41 L26,41 Z"/>
+  <path stroke="#ffffff" stroke-width="2.5" fill="none" d="M55,25.5 L50,46"/>
+  <circle cx="50" cy="49" r="3.2" fill="#ffffff"/>
 </svg>

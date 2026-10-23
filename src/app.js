@@ -505,55 +505,6 @@
     }
 
 
-    /* ---------------- follow / save buttons ---------------- */
-    /* <button class="follow-btn" data-follow="ID" data-following="0|1" data-name="..."> */
-    function paintFollow(btn, following) {
-        btn.setAttribute('data-following', following ? '1' : '0');
-        btn.setAttribute('aria-pressed', following ? 'true' : 'false');
-        btn.textContent = following ? 'Following' : 'Follow';
-        btn.classList.toggle('btn-primary', !following);
-        btn.classList.toggle('is-following', following);
-    }
-
-    document.addEventListener('click', function (e) {
-        var btn = e.target.closest && e.target.closest('.follow-btn');
-        if (!btn || btn.disabled) return;
-        e.preventDefault();
-        var id = btn.getAttribute('data-follow');
-        var was = btn.getAttribute('data-following') === '1';
-        btn.disabled = true;
-        SS.post('follow.php', { user_id: id, action: was ? 'unfollow' : 'follow' }).then(function (res) {
-            btn.disabled = false;
-            if (!res || !res.ok) { SS.toast((res && res.error) || 'Could not update follow.', { type: 'error' }); return; }
-            paintFollow(btn, !!res.following);
-            Array.prototype.forEach.call(document.querySelectorAll('[data-followers-for="' + id + '"]'), function (n) {
-                n.textContent = res.followers;
-            });
-            var who = btn.getAttribute('data-name');
-            SS.toast(res.following ? 'Following' + (who ? ' ' + who : '') + '.' : 'Unfollowed' + (who ? ' ' + who : '') + '.',
-                     { type: 'success' });
-        });
-    });
-
-    /* <button class="save-btn" data-save="UPLOAD_ID" data-saved="0|1"> */
-    document.addEventListener('click', function (e) {
-        var btn = e.target.closest && e.target.closest('.save-btn');
-        if (!btn || btn.disabled) return;
-        e.preventDefault();
-        var id = btn.getAttribute('data-save');
-        var was = btn.getAttribute('data-saved') === '1';
-        btn.disabled = true;
-        SS.post('bookmark.php', { upload_id: id, action: was ? 'unsave' : 'save' }).then(function (res) {
-            btn.disabled = false;
-            if (!res || !res.ok) { SS.toast((res && res.error) || 'Could not save.', { type: 'error' }); return; }
-            btn.setAttribute('data-saved', res.saved ? '1' : '0');
-            btn.setAttribute('aria-pressed', res.saved ? 'true' : 'false');
-            btn.classList.toggle('is-saved', !!res.saved);
-            btn.innerHTML = res.saved ? '\u2605 Saved' : '\u2606 Save';
-            SS.toast(res.saved ? 'Saved to your collection.' : 'Removed from saved.', { type: 'success' });
-        });
-    });
-
     /* <button data-copy="view.php?id=1"> copies an absolute link.
        The guide drawer has its own copy buttons carrying literal payloads,
        not links: they must not pass through here, or the text is resolved

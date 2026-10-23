@@ -20,14 +20,6 @@ if ($type === 'avatar') {                       /* public */
         if (!empty($row['avatar'])) $path = "../uploads/avatars/" . basename($row['avatar']);
     }
 
-} elseif ($type === 'gallery') {                /* public */
-    $stmt = $conn->prepare("SELECT filename FROM uploads WHERE id = ?");
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    if ($row = $stmt->get_result()->fetch_assoc()) {
-        $path = "../uploads/gallery/" . basename($row['filename']);
-    }
-
 } elseif ($type === 'app') {                    /* owner or admin only */
     if (!$uid) { http_response_code(403); exit("Access denied."); }
 
