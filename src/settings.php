@@ -56,8 +56,18 @@ include 'header.php';
     <?php if ($error): ?><div class="alert alert-error"><?php echo h($error); ?></div><?php endif; ?>
 
     <div style="text-align:center; margin-bottom:28px;">
+        <?php /* Link straight to the raw uploaded file, not through
+                 serve.php - a click opens it in a new tab in this same
+                 browser, so whatever you uploaded runs with this tab's
+                 own cookies instead of a URL copied somewhere else. */ ?>
+        <?php if (!empty($user['avatar'])): ?>
+        <a href="<?php echo h(ss_inst_url() . '/' . $user['avatar']); ?>" target="_blank" rel="noopener">
+        <?php endif; ?>
         <img class="profile-avatar" src="<?php echo ss_avatar_src($me, $user['avatar']); ?>"
              alt="" data-fallback="images/avatar-default.png">
+        <?php if (!empty($user['avatar'])): ?>
+        </a>
+        <?php endif; ?>
         <form method="post" enctype="multipart/form-data" style="margin-top:14px;">
             <label class="dropzone">
                 <span class="dz-icon" aria-hidden="true">&#8679;</span>

