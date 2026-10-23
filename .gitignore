@@ -1,3 +1,4 @@
 .DS_Store
 src/preview-deface.php
 src/i/
+logs/access.log

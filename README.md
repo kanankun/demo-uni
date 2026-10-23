@@ -44,6 +44,18 @@ To serve it over HTTPS alongside other labs, add one block to the Caddyfile
 already on the box, pointing a hostname at `127.0.0.1:8300`, and bind the
 port to loopback in `docker-compose.yml`.
 
+### Watch the access log from the host
+
+`logs/access.log` is bind-mounted into the container, so on the droplet you
+can watch student requests without touching Docker:
+
+```
+ssh root@YOUR_DROPLET 'tail -f /opt/week1-demo-uni/logs/access.log'
+```
+
+The file must exist before `docker compose up` (see the note in
+`docker-compose.yml`): `mkdir -p logs && touch logs/access.log`.
+
 ### What it needs
 
 Measured with 41 sandboxes live and the bot signing in to every one of them:

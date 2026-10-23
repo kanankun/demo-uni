@@ -21,3 +21,14 @@ services:
     # want between cohorts anyway.
     tmpfs:
       - /var/www/html/i:size=256m,mode=1777,uid=33,gid=33
+
+    # Mirror only the Apache access log onto the host, so it can be read
+    # with `tail -f logs/access.log` - no `docker exec` needed. The base
+    # image symlinks access.log to /dev/stdout; this bind masks that
+    # symlink with a real file, so requests stop appearing in
+    # `docker logs` and land in ./logs/ instead.
+    # The host file must exist before `docker compose up`, or Docker
+    # mounts a directory over the path and Apache fails to start:
+    #   mkdir -p logs && touch logs/access.log
+    volumes:
+      - ./logs/access.log:/var/log/apache2/access.log
