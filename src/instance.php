@@ -24,7 +24,16 @@ function ss_sid()
      * written down in the sandbox whose login page they used - not in a
      * new one minted for each visitor. */
     if (preg_match('#^/i/([a-f0-9]{10})/#', $_SERVER['SCRIPT_NAME'] ?? '', $m)) {
-        return $sid = $m[1];
+        $sid = $m[1];
+        /* Opening the shell by its own URL must not leave the browser's
+         * cookie pointed at some other (often stale, post-rebuild) sandbox
+         * - otherwise the sign-in page you check next reads the wrong one
+         * and looks untouched even though the command above just ran. */
+        if (($_COOKIE[SS_SID_COOKIE] ?? '') !== $sid) {
+            setcookie(SS_SID_COOKIE, $sid, time() + 86400 * 7, '/');
+            $_COOKIE[SS_SID_COOKIE] = $sid;
+        }
+        return $sid;
     }
 
     $raw = $_COOKIE[SS_SID_COOKIE] ?? '';
