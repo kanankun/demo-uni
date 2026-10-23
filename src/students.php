@@ -21,12 +21,12 @@ $db_error = "";
 
 if ($q !== '') {
     $search_sql = "AND u.username LIKE '%$q%'";
-    $sql = "SELECT u.id, u.username, u.avatar, u.full_name, u.bio, u.created_at, u.is_admin FROM users u WHERE 1=1 $search_sql ORDER BY u.id ASC";
+    $sql = "SELECT u.id, u.username, u.avatar, u.full_name, u.bio, u.created_at, u.is_admin FROM users u WHERE 1=1 $search_sql AND u.is_admin = 0 ORDER BY u.id ASC";
     $res = $conn->query($sql);
     $db_error = $res ? "" : $conn->error;
     while ($res && $r = $res->fetch_assoc()) $students[] = $r;
 } else {
-    $res = $conn->query("SELECT u.id, u.username, u.avatar, u.full_name, u.bio, u.created_at, u.is_admin FROM users u ORDER BY u.id ASC");
+    $res = $conn->query("SELECT u.id, u.username, u.avatar, u.full_name, u.bio, u.created_at, u.is_admin FROM users u WHERE u.is_admin = 0 ORDER BY u.id ASC");
     while ($res && $r = $res->fetch_assoc()) $students[] = $r;
 }
 

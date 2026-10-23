@@ -32,9 +32,14 @@ $ss_link = function ($href, $label, $files = null, $class = '') use ($ss_cur) {
                 <?php echo $ss_link('dashboard.php', 'DASHBOARD'); ?>
                 <?php echo $ss_link('announcements.php', 'ANNOUNCEMENTS', ['announcements.php', 'announcement.php', 'post_announcement.php']); ?>
                 <?php echo $ss_link('assignments.php', 'ASSIGNMENTS', ['assignments.php', 'post_assignment.php']); ?>
+                <?php if ($ss_admin): ?>
+                    <?php echo $ss_link('apply.php', 'CLASSES'); ?>
+                <?php endif; ?>
                 <?php echo $ss_link('schedule.php', 'TIMETABLE'); ?>
-                <?php echo $ss_link('results.php', 'RESULTS'); ?>
-                <?php echo $ss_link('fees.php', 'FEES'); ?>
+                <?php if (!$ss_admin): ?>
+                    <?php echo $ss_link('results.php', 'RESULTS'); ?>
+                    <?php echo $ss_link('fees.php', 'FEES'); ?>
+                <?php endif; ?>
                 <?php echo $ss_link('students.php', 'STUDENTS'); ?>
                 <?php echo $ss_link('profile.php', 'PROFILE', ['profile.php', 'settings.php']); ?>
                 <?php if ($ss_admin): ?>

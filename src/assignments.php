@@ -9,6 +9,7 @@ ss_require_login();
 
 $me    = ss_uid();
 $admin = ss_is_admin($conn);
+$lecturer_scoped = $admin && ss_is_lecturer($conn);
 $page_title = 'Assignments';
 $error = "";
 
@@ -42,16 +43,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['assignment_id']) && !
 }
 
 $assignments = [];
-$res = $conn->query("SELECT a.*, us.username AS poster FROM assignments a JOIN users us ON a.created_by = us.id ORDER BY a.due_at ASC");
+if ($lecturer_scoped) {
+    $stmt = $conn->prepare("SELECT a.*, us.username AS poster FROM assignments a JOIN users us ON a.created_by = us.id WHERE a.created_by = ? ORDER BY a.due_at ASC");
+    $stmt->bind_param("i", $me);
+    $stmt->execute();
+    $res = $stmt->get_result();
+} elseif ($admin) {
+    $res = $conn->query("SELECT a.*, us.username AS poster FROM assignments a JOIN users us ON a.created_by = us.id ORDER BY a.due_at ASC");
+} else {
+    /* students need every assignment on offer, not just one lecturer's */
+    $res = $conn->query("SELECT a.*, us.username AS poster FROM assignments a JOIN users us ON a.created_by = us.id ORDER BY a.due_at ASC");
+}
 while ($res && $r = $res->fetch_assoc()) $assignments[] = $r;
 
 if ($admin) {
-    /* every submission, grouped by assignment */
+    /* every submission to one of the assignments above, grouped by assignment -
+       already scoped to just this lecturer's own when $lecturer_scoped, because
+       $assignments itself was */
     $subs_by_assignment = [];
-    $res = $conn->query(
-        "SELECT s.id, s.assignment_id, s.submitted_at, u.username FROM assignment_submissions s
-         JOIN users u ON s.user_id = u.id ORDER BY s.submitted_at DESC");
-    while ($res && $r = $res->fetch_assoc()) $subs_by_assignment[$r['assignment_id']][] = $r;
+    $ids = array_column($assignments, 'id');
+    if ($ids) {
+        $in = implode(',', array_fill(0, count($ids), '?'));
+        $stmt = $conn->prepare("SELECT s.id, s.assignment_id, s.submitted_at, u.username FROM assignment_submissions s
+                                   JOIN users u ON s.user_id = u.id WHERE s.assignment_id IN ($in) ORDER BY s.submitted_at DESC");
+        $stmt->bind_param(str_repeat('i', count($ids)), ...$ids);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        while ($r = $res->fetch_assoc()) $subs_by_assignment[$r['assignment_id']][] = $r;
+    }
 } else {
     /* just this student's own submissions, keyed by assignment */
     $my_subs = [];
@@ -70,7 +89,15 @@ include 'header.php';
     <div class="page-head">
         <div>
             <h2>Assignments</h2>
-            <p>Coursework from your lecturers, with due dates and submissions.</p>
+            <p>
+                <?php if ($lecturer_scoped): ?>
+                    The assignments you've posted, and who has submitted.
+                <?php elseif ($admin): ?>
+                    Every assignment posted this semester, and who has submitted.
+                <?php else: ?>
+                    Coursework from your lecturers, with due dates and submissions.
+                <?php endif; ?>
+            </p>
         </div>
         <?php if ($admin): ?><a class="btn btn-primary" href="post_assignment.php">+ Post assignment</a><?php endif; ?>
     </div>

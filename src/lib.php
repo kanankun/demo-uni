@@ -19,6 +19,19 @@ if (!function_exists('ss_is_admin')) {
     }
 }
 
+/* A lecturer is an admin account for everything ss_is_admin() already
+ * gates (posting, approving, the ADMIN tab) - this only narrows the one
+ * thing that shouldn't extend to them: admin.php's password reset. */
+function ss_is_lecturer($conn)
+{
+    if (empty($_SESSION['user_id'])) return false;
+    $stmt = $conn->prepare("SELECT is_lecturer FROM users WHERE id = ?");
+    $stmt->bind_param("i", $_SESSION['user_id']);
+    $stmt->execute();
+    $row = $stmt->get_result()->fetch_assoc();
+    return !empty($row['is_lecturer']);
+}
+
 /* Current user id, or 0 for a guest. */
 function ss_uid()
 {

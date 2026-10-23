@@ -1,5 +1,10 @@
 <?php
-/* Administration: member list + password reset. */
+/* Administration: account list + password reset.
+ *
+ * A lecturer reaches this page too - ss_is_admin() covers them, same as
+ * every other staff-gated page. Password reset is the one thing that
+ * doesn't extend to them: it's checked separately, against is_lecturer,
+ * not folded into the admin check above it. */
 include 'db.php';
 ss_require_login();
 
@@ -8,9 +13,14 @@ if (!ss_is_admin($conn)) {
     exit("ACCESS DENIED");
 }
 
+$lecturer = ss_is_lecturer($conn);
 $page_title = 'Admin';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_id'], $_POST['new_pass'])) {
+    if ($lecturer) {
+        http_response_code(403);
+        exit("Lecturer accounts can't reset passwords - ask a full admin.");
+    }
     $hash = $_POST['new_pass'];   // [VULN] stored exactly as typed
     $tid  = (int) $_POST['user_id'];
     $stmt = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
@@ -24,14 +34,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_id'], $_POST['ne
 $q = trim($_GET['search'] ?? '');
 if ($q !== '') {
     $stmt = $conn->prepare(
-        "SELECT id, username, email, is_admin, full_name, avatar, created_at FROM users
+        "SELECT id, username, email, is_admin, is_lecturer, full_name, avatar, created_at FROM users
           WHERE username LIKE ? OR email LIKE ? ORDER BY id");
     $like = '%' . $q . '%';
     $stmt->bind_param("ss", $like, $like);
     $stmt->execute();
     $users = $stmt->get_result();
 } else {
-    $users = $conn->query("SELECT id, username, email, is_admin, full_name, avatar, created_at FROM users ORDER BY id");
+    $users = $conn->query("SELECT id, username, email, is_admin, is_lecturer, full_name, avatar, created_at FROM users ORDER BY id");
 }
 
 include 'header.php';
@@ -71,16 +81,22 @@ include 'header.php';
                 </td>
                 <td data-label="Matric no." class="mono"><?php echo h(ss_matric($u['id'], $u['created_at'], $u['is_admin'])); ?></td>
                 <td data-label="Role">
-                    <span class="badge <?php echo $u['is_admin'] ? 'badge-dark' : ''; ?>"><?php echo $u['is_admin'] ? 'ADMIN' : 'USER'; ?></span>
+                    <span class="badge <?php echo $u['is_admin'] ? 'badge-dark' : ''; ?>">
+                        <?php echo $u['is_lecturer'] ? 'LECTURER' : ($u['is_admin'] ? 'ADMIN' : 'USER'); ?>
+                    </span>
                 </td>
                 <td data-label="Action">
                     <div class="adm-actions">
-                        <form method="post">
-                            <input type="hidden" name="user_id" value="<?php echo (int) $u['id']; ?>">
-                            <input type="hidden" name="new_pass" value="">
-                            <button type="submit" class="btn btn-sm"
-                                    data-reset-user="<?php echo h($u['username']); ?>">RESET PASSWORD</button>
-                        </form>
+                        <?php if ($lecturer): ?>
+                            <span class="sub">Full admin only</span>
+                        <?php else: ?>
+                            <form method="post">
+                                <input type="hidden" name="user_id" value="<?php echo (int) $u['id']; ?>">
+                                <input type="hidden" name="new_pass" value="">
+                                <button type="submit" class="btn btn-sm"
+                                        data-reset-user="<?php echo h($u['username']); ?>">RESET PASSWORD</button>
+                            </form>
+                        <?php endif; ?>
                     </div>
                 </td>
             </tr>
