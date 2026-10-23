@@ -25,7 +25,7 @@ The payoff is deliberately not a flag:
 docker compose up -d --build
 ```
 
-Then <http://localhost:8300>. First build takes a few minutes (it bakes the
+Then <http://localhost>. First build takes a few minutes (it bakes the
 database into the image); after that a container is serving in about two
 seconds.
 
@@ -36,12 +36,12 @@ scp -r demo-uni root@YOUR_DROPLET:/opt/week1-demo-uni
 ssh root@YOUR_DROPLET 'cd /opt/week1-demo-uni && docker compose up -d --build'
 ```
 
-It listens on 8300 and is self-contained - one container, its own database,
+It listens on port 80 and is self-contained - one container, its own database,
 no dependency on any other lab. Nothing in this folder touches another
 deployment or its Caddy/HTTPS setup.
 
 To serve it over HTTPS alongside other labs, add one block to the Caddyfile
-already on the box, pointing a hostname at `127.0.0.1:8300`, and bind the
+already on the box, pointing a hostname at `127.0.0.1:80`, and bind the
 port to loopback in `docker-compose.yml`.
 
 ### Watch the access log from the host
@@ -142,7 +142,7 @@ Do not put this on a network you care about, and do not reuse any of it.
 
 ```
 Dockerfile              one container: Apache + PHP + MariaDB
-docker-compose.yml      builds and runs it on 8300
+docker-compose.yml      builds and runs it on port 80
 entrypoint.sh           database, then the bot, then Apache
 sql/                    schema and seed - passwords in plain text
 src/                    the application

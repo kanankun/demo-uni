@@ -4,7 +4,7 @@ services:
     image: week1-demo-uni:latest
     container_name: week1-demo-uni
     ports:
-      - "8300:80"
+      - "80:80"
     restart: unless-stopped
 
     # This container hands forty students a shell. Without limits, one
